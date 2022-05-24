@@ -1,6 +1,6 @@
 package cl.uchile.dcc.citricliquid.model.board;
 
-import cl.uchile.dcc.citricliquid.model.Player;
+import cl.uchile.dcc.citricliquid.model.AbstractUnit;
 import java.util.HashSet;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
@@ -12,8 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.1.222804
  * @since 1.0
  */
-public class Panel {
-  private final PanelType type;
+public abstract class Panel {
   private final Set<Panel> nextPanels = new HashSet<>();
 
   /**
@@ -28,14 +27,14 @@ public class Panel {
   /**
    * Restores a player's HP in 1.
    */
-  private static void applyHealTo(final @NotNull Player player) {
+  private static void applyHealTo(final @NotNull AbstractUnit player) {
     player.setCurrentHp(player.getCurrentHp() + 1);
   }
 
   /**
    * Reduces the player's star count by the D6 roll multiplied by the player's norma level.
    */
-  private static void applyDropTo(final @NotNull Player player) {
+  private static void applyDropTo(final @NotNull AbstractUnit player) {
     player.reduceStarsBy(player.roll() * player.getNormaLevel());
   }
 
@@ -43,7 +42,7 @@ public class Panel {
    * Reduces the player's star count by the D6 roll multiplied by the maximum between the player's
    * norma level and three.
    */
-  private static void applyBonusTo(final @NotNull Player player) {
+  private static void applyBonusTo(final @NotNull AbstractUnit player) {
     player.increaseStarsBy(player.roll() * Math.min(player.getNormaLevel(), 3));
   }
 
@@ -73,7 +72,7 @@ public class Panel {
   /**
    * Executes the appropriate action to the player according to this panel's type.
    */
-  public void activatedBy(final Player player) {
+  public void activatedBy(final AbstractUnit player) {
     switch (type) {
       case BONUS -> applyBonusTo(player);
       case DROP -> applyDropTo(player);

@@ -1,6 +1,6 @@
 package cl.uchile.dcc.citricliquid.model.board;
 
-import cl.uchile.dcc.citricliquid.model.Player;
+import cl.uchile.dcc.citricliquid.model.AbstractUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class PanelTest {
   private Panel testDropPanel;
   private Panel testEncounterPanel;
   private Panel testBossPanel;
-  private Player suguri;
+  private AbstractUnit suguri;
   private long testSeed;
 
   @BeforeEach
@@ -40,7 +40,7 @@ class PanelTest {
     testHomePanel = new Panel(PanelType.HOME);
     testNeutralPanel = new Panel(PanelType.NEUTRAL);
     testSeed = new Random().nextLong();
-    suguri = new Player(PLAYER_NAME, BASE_HP, BASE_ATK, BASE_DEF, BASE_EVD);
+    suguri = new AbstractUnit(PLAYER_NAME, BASE_HP, BASE_ATK, BASE_DEF, BASE_EVD);
   }
 
   @Test

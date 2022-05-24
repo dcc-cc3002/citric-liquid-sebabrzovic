@@ -14,18 +14,18 @@ import java.util.Random;
  * @version 1.0.6-rc.1
  * @since 1.0
  */
-public class PlayerTest {
+public class AbstractUnitTest {
   private final static String PLAYER_NAME = "Suguri";
-  private Player suguri;
+  private AbstractUnit suguri;
 
   @BeforeEach
   public void setUp() {
-    suguri = new Player(PLAYER_NAME, 4, 1, -1, 2);
+    suguri = new AbstractUnit(PLAYER_NAME, 4, 1, -1, 2);
   }
 
   @Test
   public void constructorTest() {
-    final var expectedSuguri = new Player(PLAYER_NAME, 4, 1, -1, 2);
+    final var expectedSuguri = new AbstractUnit(PLAYER_NAME, 4, 1, -1, 2);
     Assertions.assertEquals(expectedSuguri, suguri);
   }
 
@@ -34,7 +34,7 @@ public class PlayerTest {
     final var o = new Object();
     Assertions.assertNotEquals(suguri, o);
     Assertions.assertEquals(suguri, suguri);
-    final var expectedSuguri = new Player(PLAYER_NAME, 4, 1, -1, 2);
+    final var expectedSuguri = new AbstractUnit(PLAYER_NAME, 4, 1, -1, 2);
     Assertions.assertEquals(expectedSuguri, suguri);
   }
 
@@ -57,7 +57,7 @@ public class PlayerTest {
 
   @Test
   public void copyTest() {
-    final var expectedSuguri = new Player(PLAYER_NAME, 4, 1, -1, 2);
+    final var expectedSuguri = new AbstractUnit(PLAYER_NAME, 4, 1, -1, 2);
     final var actualSuguri = suguri.copy();
     // Checks that the copied player have the same parameters as the original
     Assertions.assertEquals(expectedSuguri, actualSuguri);
