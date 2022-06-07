@@ -1,32 +1,24 @@
 package cl.uchile.dcc.citricliquid.model;
 
+import cl.uchile.dcc.citricliquid.model.board.Ipanel;
+
 import java.util.Random;
 
 /**
  * This class represents a player in the game 99.7% Citric Liquid.
- *
- * @author <a href="mailto:ignacio.slater@ug.uchile.cl">Ignacio Slater
- *     Muñoz</a>.
- * @version 1.1.222804
- * @since 1.0
  */
-public abstract class AbstractUnit {
+public abstract class AbstractUnit implements IUnit{
   private final Random random;
-  private final String name;   /**  player*/
   private final int maxHp;
   private final int atk;
   private final int def;
   private final int evd;
-  private int normaLevel;   /**  player*/
-  private int stars;       /**  player*/
-  private int victories;    /**  player*/
+  private final String playerName;
+  private int stars;
   private int currentHp;
 
   /**
    * Creates a new character.
-   *
-   * @param name
-   *     the character's name.
    * @param hp
    *     the initial (and max) hit points of the character.
    * @param atk
@@ -36,19 +28,24 @@ public abstract class AbstractUnit {
    * @param evd
    *     the base evasion of the character.
    */
-  public AbstractUnit(final String name, final int hp, final int atk, final int def,
+  public AbstractUnit( final String name, final int hp, final int atk, final int def,
                       final int evd) {
-    this.name = name;
     this.maxHp = currentHp = hp;
+    this.playerName = name;
     this.atk = atk;
     this.def = def;
     this.evd = evd;
-    normaLevel = 1;
     random = new Random();
   }
-
+  /**
+   * Returns the character's name.
+   */
+  public String getName() {
+    return playerName;
+  }
   /**
    * Increases this player's star count by an amount.
+   * @param amount
    */
   public void increaseStarsBy(final int amount) {
     stars += amount;
@@ -78,12 +75,6 @@ public abstract class AbstractUnit {
     return random.nextInt(6) + 1;
   }
 
-  /**
-   * Returns the character's name.
-   */
-  public String getName() {
-    return name;
-  }
 
   /**
    * Returns the character's max hit points.
@@ -114,20 +105,6 @@ public abstract class AbstractUnit {
   }
 
   /**
-   * Returns the current norma level.
-   */
-  public int getNormaLevel() {
-    return normaLevel;
-  }
-
-  /**
-   * Performs a norma clear action; the {@code norma} counter increases in 1.
-   */
-  public void normaClear() {
-    normaLevel++;
-  }
-
-  /**
    * Returns the current hit points of the character.
    */
   public int getCurrentHp() {
@@ -135,23 +112,27 @@ public abstract class AbstractUnit {
   }
 
   /**
-   * Sets the current character's hit points.
+   *
    *
    * <p>The character's hit points have a constraint to always be between 0 and maxHP, both
    * inclusive.
+   * @param newHp
+   * Sets the current character's hit points.
    */
-  public void setCurrentHp(final int newHp) {
-    this.currentHp = Math.max(Math.min(newHp, maxHp), 0);
+  public void increaseHpBy(final int newHp) {
+    this.currentHp = Math.max(Math.min(this.currentHp + newHp, maxHp), 0);
   }
 
   /**
    * Reduces this player's star count by a given amount.
    *
    * <p>The star count will must always be greater or equal to 0
+   * @param amount
    */
   public void reduceStarsBy(final int amount) {
     stars = Math.max(0, stars - amount);
   }
+
 
   @Override
   public boolean equals(final Object o) {
@@ -165,16 +146,13 @@ public abstract class AbstractUnit {
            && getAtk() == player.getAtk()
            && getDef() == player.getDef()
            && getEvd() == player.getEvd()
-           && getNormaLevel() == player.getNormaLevel()
-           && getStars() == player.getStars()
-           && getCurrentHp() == player.getCurrentHp()
-           && getName().equals(player.getName());
+           && getStars() == player.getStars() && playerName==player.getName()
+           && getCurrentHp() == player.getCurrentHp();
+
   }
 
   /**
    * Returns a copy of this character.
    */
-  public AbstractUnit copy() {
-    return new AbstractUnit(name, maxHp, atk, def, evd);
-  }
+  public abstract AbstractUnit copy();
 }

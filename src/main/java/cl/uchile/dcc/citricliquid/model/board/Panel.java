@@ -1,63 +1,52 @@
 package cl.uchile.dcc.citricliquid.model.board;
 
 import cl.uchile.dcc.citricliquid.model.AbstractUnit;
+
+import java.lang.reflect.Array;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.*;
+
+import cl.uchile.dcc.citricliquid.model.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Class that represents a panel in the board of the game.
  *
- * @author <a href="mailto:ignacio.slater@ug.uchile.cl">Ignacio Slater Muñoz</a>.
- * @version 1.1.222804
- * @since 1.0
  */
-public abstract class Panel {
+public abstract class Panel implements Ipanel{
+
+  private float Id;
   private final Set<Panel> nextPanels = new HashSet<>();
+  private ArrayList<Player> Players = new ArrayList<Player>();
+  private Ipanel Up = null;
+  private Ipanel Down = null;
+  private Ipanel Left = null;
+  private Ipanel Right = null;
+
 
   /**
-   * Creates a new panel.
-   *
-   * @param type the type of the panel.
+   * create a Paneñ with an own id for every panel in order to identify each one and identify the players home panel and extract it
+   * @param newId
    */
-  public Panel(final PanelType type) {
-    this.type = type;
-  }
 
-  /**
-   * Restores a player's HP in 1.
-   */
-  private static void applyHealTo(final @NotNull AbstractUnit player) {
-    player.setCurrentHp(player.getCurrentHp() + 1);
+  public Panel(float newId){
+    this.Id = newId;
   }
-
-  /**
-   * Reduces the player's star count by the D6 roll multiplied by the player's norma level.
-   */
-  private static void applyDropTo(final @NotNull AbstractUnit player) {
-    player.reduceStarsBy(player.roll() * player.getNormaLevel());
-  }
-
-  /**
-   * Reduces the player's star count by the D6 roll multiplied by the maximum between the player's
-   * norma level and three.
-   */
-  private static void applyBonusTo(final @NotNull AbstractUnit player) {
-    player.increaseStarsBy(player.roll() * Math.min(player.getNormaLevel(), 3));
-  }
-
-  /**
-   * Returns the type of this panel.
-   */
-  public PanelType getType() {
-    return type;
-  }
-
   /**
    * Returns a copy of this panel's next ones.
    */
   public Set<Panel> getNextPanels() {
     return Set.copyOf(nextPanels);
+  }
+
+
+  /**
+   * Extract the ID for futher purpose
+   * @return
+   */
+  public float getId() {
+    return Id;
   }
 
   /**
@@ -69,16 +58,73 @@ public abstract class Panel {
     nextPanels.add(panel);
   }
 
+
   /**
-   * Executes the appropriate action to the player according to this panel's type.
+   * add the player that has landed on the panel and then eliminate that player once it leaves
+   * @param player
    */
-  public void activatedBy(final AbstractUnit player) {
-    switch (type) {
-      case BONUS -> applyBonusTo(player);
-      case DROP -> applyDropTo(player);
-      case HOME -> applyHealTo(player);
-      default -> {
-      }
-    }
+  public void addPlayer(Player player) {
+    Players.add(player);
+
+  }
+
+  /**
+   * extract the player who are in the panel
+   * @return
+   */
+
+  public List<Player> getPlayers() {
+    return Players;
+  }
+
+  /**
+   * Here we will set and get the panels in every side for an eventual need
+   */
+
+
+  public Ipanel getLeft() {
+    return Left;
+  }
+  public Ipanel getRight() {
+    return Right;
+  }
+  public Ipanel getUp() {return Up;}
+  public Ipanel getDown() {
+    return Down;
+  }
+
+
+  public void setLeft(Ipanel left) {
+    this.Left = left;
+  }
+
+  public void setRight(Ipanel right) {
+    this.Right = right;
+  }
+
+  public void setUp(Ipanel up) {
+    this.Up = up;
+  }
+
+  public void setDown(Ipanel down) {
+    this.Down = down;
+  }
+
+
+
+
+
+  /**
+   * Here we will execute the action, it will be summoned in each panel
+   */
+  public abstract void activatedBy(Player player);
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Panel)) return false;
+    Panel panel = (Panel) o;
+    return Id == panel.Id && nextPanels.equals(panel.nextPanels) && Players.equals(panel.Players) && Objects.equals(panel.Up, Up) && Objects.equals(panel.Down, Down) && Objects.equals(panel.Left, Left) && Objects.equals(panel.Right, Right);
+
   }
 }
