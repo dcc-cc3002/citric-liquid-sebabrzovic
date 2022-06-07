@@ -16,48 +16,72 @@ import java.util.Random;
  */
 public class AbstractUnitTest {
   private final static String PLAYER_NAME = "Suguri";
-  private AbstractUnit suguri;
+  private Player suguri;
+  private Wild wild1;
+  private Boss_Unit boss1;
 
   @BeforeEach
   public void setUp() {
-    suguri = new AbstractUnit(PLAYER_NAME, 4, 1, -1, 2);
+    suguri = new Player(PLAYER_NAME, 4,1, -1, 2);
+    wild1 = new Wild("CHICKEN", 3, -1, -1, +1 );
+    boss1 = new Boss_Unit("SHIFU ROBOT", 7, 2, 3, -2);
+
+
   }
 
   @Test
   public void constructorTest() {
-    final var expectedSuguri = new AbstractUnit(PLAYER_NAME, 4, 1, -1, 2);
+    final var expectedSuguri = new Player(PLAYER_NAME, 4, 1, -1, 2);
+    /**final var expectedwild1 = new Wild("CHICKEN", 3, -1, -1, +1 );
+    final var expectedboss1 = new Boss_Unit("SHIFU ROBOT", 7, 2, 3, -2);*/
+    final var expectedwild1 = wild1.copy();
+    final var expectedboss1 = boss1.copy();
     Assertions.assertEquals(expectedSuguri, suguri);
+    Assertions.assertEquals(expectedwild1, wild1);
+    Assertions.assertEquals(expectedboss1, boss1);
+
+
   }
+
+
 
   @Test
   public void testEquals() {
     final var o = new Object();
     Assertions.assertNotEquals(suguri, o);
     Assertions.assertEquals(suguri, suguri);
-    final var expectedSuguri = new AbstractUnit(PLAYER_NAME, 4, 1, -1, 2);
+    final var expectedSuguri = new Player(PLAYER_NAME,4,  1, -1, 2);
     Assertions.assertEquals(expectedSuguri, suguri);
   }
 
   @Test
+  public void testEquals2(){
+
+  }
+
+
+  @Test
   public void hitPointsTest() {
     Assertions.assertEquals(suguri.getMaxHp(), suguri.getCurrentHp());
-    suguri.setCurrentHp(2);
-    Assertions.assertEquals(2, suguri.getCurrentHp());
-    suguri.setCurrentHp(-1);
+    suguri.increaseHpBy(2);
+    Assertions.assertEquals(6, suguri.getCurrentHp());
+    suguri.increaseHpBy(-10);
     Assertions.assertEquals(0, suguri.getCurrentHp());
-    suguri.setCurrentHp(5);
-    Assertions.assertEquals(4, suguri.getCurrentHp());
+    suguri.increaseHpBy(5);
+    Assertions.assertEquals(5, suguri.getCurrentHp());
   }
 
   @Test
   public void normaClearTest() {
-    suguri.normaClear();
+    suguri.increasevictoriesBy(5);
+    suguri.setNormaGoal("WINS");
+    suguri.normaCheck();
     Assertions.assertEquals(2, suguri.getNormaLevel());
   }
 
   @Test
   public void copyTest() {
-    final var expectedSuguri = new AbstractUnit(PLAYER_NAME, 4, 1, -1, 2);
+    final var expectedSuguri = new Player(PLAYER_NAME, 4, 1, -1, 2);
     final var actualSuguri = suguri.copy();
     // Checks that the copied player have the same parameters as the original
     Assertions.assertEquals(expectedSuguri, actualSuguri);
@@ -72,7 +96,7 @@ public class AbstractUnitTest {
     // We're gonna try and set random hit points in [-maxHP * 2, maxHP * 2]
     final int testHP = new Random(testSeed).nextInt(4 * suguri.getMaxHp() + 1)
                        - 2 * suguri.getMaxHp();
-    suguri.setCurrentHp(testHP);
+    suguri.increaseHpBy(testHP);
     Assertions.assertTrue(0 <= suguri.getCurrentHp()
                           && suguri.getCurrentHp() <= suguri.getMaxHp(),
                           suguri.getCurrentHp() + "is not a valid HP value"
@@ -102,5 +126,7 @@ public class AbstractUnitTest {
                           roll + "is not in [1, 6]" + System.lineSeparator()
                           + "Test failed with random seed: " + testSeed);
   }
+
+
   // endregion
 }
