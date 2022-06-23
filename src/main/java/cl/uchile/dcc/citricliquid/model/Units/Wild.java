@@ -1,8 +1,6 @@
-package cl.uchile.dcc.citricliquid.model;
+package cl.uchile.dcc.citricliquid.model.Units;
 
-import java.util.Objects;
-
-public class Wild extends AbstractUnit{
+public class Wild extends AbstractUnit {
 
     /**
      * Creates the wild unit

@@ -1,10 +1,10 @@
-package cl.uchile.dcc.citricliquid.model;
+package cl.uchile.dcc.citricliquid.model.Units;
 
 import cl.uchile.dcc.citricliquid.model.board.Ipanel;
 
 import java.util.*;
 
-public class Player extends AbstractUnit{
+public class Player extends AbstractUnit {
     private int normaLevel;
     private int victories;
     private int homePanel;

@@ -1,14 +1,10 @@
 package cl.uchile.dcc.citricliquid.model.board;
 
-import cl.uchile.dcc.citricliquid.model.AbstractUnit;
-
-import java.lang.reflect.Array;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.*;
 
-import cl.uchile.dcc.citricliquid.model.Player;
-import org.jetbrains.annotations.NotNull;
+import cl.uchile.dcc.citricliquid.model.Units.Player;
 
 /**
  * Class that represents a panel in the board of the game.

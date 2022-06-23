@@ -1,8 +1,6 @@
 package cl.uchile.dcc.citricliquid.model.board;
 
-import cl.uchile.dcc.citricliquid.model.AbstractUnit;
-import cl.uchile.dcc.citricliquid.model.Player;
-import org.jetbrains.annotations.NotNull;
+import cl.uchile.dcc.citricliquid.model.Units.Player;
 
 public class Bonus extends Panel{
 

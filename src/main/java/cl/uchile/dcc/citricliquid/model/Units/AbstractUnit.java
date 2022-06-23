@@ -1,13 +1,11 @@
-package cl.uchile.dcc.citricliquid.model;
-
-import cl.uchile.dcc.citricliquid.model.board.Ipanel;
+package cl.uchile.dcc.citricliquid.model.Units;
 
 import java.util.Random;
 
 /**
  * This class represents a player in the game 99.7% Citric Liquid.
  */
-public abstract class AbstractUnit implements IUnit{
+public abstract class AbstractUnit implements IUnit {
   private final Random random;
   private final int maxHp;
   private final int atk;
@@ -155,4 +153,7 @@ public abstract class AbstractUnit implements IUnit{
    * Returns a copy of this character.
    */
   public abstract AbstractUnit copy();
+
+
+
 }

@@ -1,8 +1,6 @@
-package cl.uchile.dcc.citricliquid.model;
+package cl.uchile.dcc.citricliquid.model.Units;
 
-import java.util.Objects;
-
-public class Boss_Unit extends AbstractUnit{
+public class Boss_Unit extends AbstractUnit {
 
     public Boss_Unit(String name, int hp, final int atk, final int def, final int evd) {
         super(name, hp,atk, def, evd);
@@ -22,4 +20,6 @@ public class Boss_Unit extends AbstractUnit{
     public boolean equals(Object o) {
         return super.equals(o);
     }
+
+
 }
