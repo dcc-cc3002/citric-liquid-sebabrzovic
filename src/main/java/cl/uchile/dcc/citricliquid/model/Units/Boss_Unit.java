@@ -11,6 +11,16 @@ public class Boss_Unit extends AbstractUnit {
         return super.getName();
     }
 
+    /**
+     * player won the batlle agains a wild unit
+     * @param player
+     */
+    @Override
+    public void defeatedByPlayer(Player player) {
+        player.increaseStarsBy(this.getStars());
+        player.increasevictoriesBy(3);
+    }
+
     @Override
     public Boss_Unit copy(){
         return new Boss_Unit(getName(), getMaxHp(), getAtk(), getDef(), getEvd());

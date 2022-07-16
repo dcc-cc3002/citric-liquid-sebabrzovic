@@ -1,9 +1,9 @@
 package cl.uchile.dcc.citricliquid.model.Phases;
 
-public class StartPhase extends Phase{
-    public StartPhase(){
-        this.canIStart = true;
-        this.amIKo = false;
+public class RecoveryPhase extends Phase{
+    public RecoveryPhase(){
+        this.canIStart = false;
+        this.amIKo = true;
         this.choosingCard = false;
         this.canIMove = false;
         this.canIattack = false;
@@ -16,22 +16,10 @@ public class StartPhase extends Phase{
     }
 
     /**
-     * If it is not ko it will go to the phase where it decides the card or not
+     * once it recovers it will go on to choose a card
      */
     @Override
     public void toChooseCardPhase() {
         changePhase(new ChooseCardPhase());
     }
-
-
-    /**
-     * If it is ko it will go to recovery phase
-     */
-
-    @Override
-    public void toRecoveryPhase(){
-        changePhase(new RecoveryPhase());
-    }
-
-
 }

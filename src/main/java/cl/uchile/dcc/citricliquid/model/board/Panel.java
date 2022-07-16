@@ -10,7 +10,7 @@ import cl.uchile.dcc.citricliquid.model.Units.Player;
  * Class that represents a panel in the board of the game.
  *
  */
-public abstract class Panel implements Ipanel{
+public abstract class   Panel implements Ipanel{
 
   private float Id;
   private final Set<Panel> nextPanels = new HashSet<>();
@@ -50,7 +50,7 @@ public abstract class Panel implements Ipanel{
    *
    * @param panel the panel to be added.
    */
-  public void addNextPanel(final Panel panel) {
+  public void addNextPanel(Ipanel panel) {
     nextPanels.add(panel);
   }
 

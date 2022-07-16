@@ -20,6 +20,16 @@ public class Wild extends AbstractUnit {
     }
 
     /**
+     * player won the batlle agains a wild unit
+     * @param player
+     */
+    @Override
+    public void defeatedByPlayer(Player player) {
+        player.increaseStarsBy(this.getStars());
+        player.increasevictoriesBy(3);
+    }
+
+    /**
      * Return a copy of the wild unit
      * @return
      */

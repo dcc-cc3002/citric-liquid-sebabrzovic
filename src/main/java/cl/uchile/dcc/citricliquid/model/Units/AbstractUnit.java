@@ -149,10 +149,57 @@ public abstract class AbstractUnit implements IUnit {
 
   }
 
+
+  public void defeatAgainstUnit(IUnit unit){
+  }
+  public void defeatedByPlayer(Player unit){
+
+  }
+  public void defeatedByWild(Wild unit){
+
+  }
+  public void defeatedByBoss(Boss_Unit unit){
+
+  }
+
+  /**
+   * Like every unit can defeat a player this method is created in the abstract class
+   * @param e_player
+   */
+  public void victory_against_player(Player e_player){
+    this.increaseStarsBy((int)Math.floor(e_player.getStars()*0.5));
+    e_player.reduceStarsBy((int)Math.floor(e_player.getStars()*0.5));
+  }
+
+  /**}
+   * the unit recieved the attack and only looses Hp if its dodge is better than the attack
+   * @param attackRecieved
+   * @param diceRoll
+   */
+  public void esquivar(int attackRecieved, int diceRoll){
+    if (this.evd+ diceRoll < attackRecieved){
+      this.increaseHpBy(-attackRecieved);
+    }
+  }
+
+  /**
+   * defense by the unit
+   * @param attackRecieved
+   * @param diceRoll
+   */
+  public void defense(int attackRecieved, int diceRoll){
+    this.increaseHpBy(Math.max(1, attackRecieved - (this.def + diceRoll)));
+  }
+
   /**
    * Returns a copy of this character.
    */
   public abstract AbstractUnit copy();
+
+  public int getFinalAttack(){
+    return (this.roll()+ this.getAtk());
+  }
+
 
 
 

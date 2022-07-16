@@ -11,7 +11,7 @@ public interface Ipanel {
 
     float getId();
 
-    void addNextPanel(final Panel panel);
+    void addNextPanel(final Ipanel panel);
 
     void addPlayer(Player player);
 
