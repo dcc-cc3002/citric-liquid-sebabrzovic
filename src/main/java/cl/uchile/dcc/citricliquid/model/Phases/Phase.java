@@ -5,98 +5,55 @@ import cl.uchile.dcc.citricliquid.model.Units.Player;
 
 public abstract class Phase {
     private Controller Controller;
-    public boolean canIStart;
-    public boolean amIKo;
-    public boolean choosingCard;
-    public boolean canIMove;
-    public boolean canIattack;
-    private boolean canIcounterattack;
-    public boolean canIrest;
-    public boolean battle;
-    public boolean waitAtHome;
-    public boolean playCard;
-    public boolean activatePanel;
-    public boolean canIfinish;
 
+    /**
+     * Class Phase and Controller will be linked with each other, for that a Controller is set
+     * @param controller
+     */
     public void setController(Controller controller){
         this.Controller = controller ;
 
     }
+    /**
+     * Method used to change the phase the controller is
+     */
     public void changePhase(Phase fase){
         this.Controller.setPhase(fase);
     }
 
-    public void StartPhase() throws InvalidAction, InvalidPhase{
+    /**
+     * The next Methods are used to change the phases in the controller, The names tells it where to which phase it will be changed
+     * @throws InvalidPhase
+     */
+    public void toStartphase() throws InvalidPhase{
         throw new InvalidPhase("You cannot start");
     }
 
-    public void toStartphase(){}
-
-    public void RecoveryPhase() throws InvalidAction, InvalidPhase{
+    public void toRecoveryPhase() throws InvalidPhase{
         throw new InvalidPhase("You cannot recover ");
+
+    };
+
+    public void toMovingPhase() throws InvalidPhase{
+        throw new InvalidPhase("You cannot move");
+    }
+    public  void toDecisionMovingPhase() throws InvalidPhase{
+        throw new InvalidPhase("You cannot move");
     }
 
-    public void toRecoveryPhase(){};
-
-    public void ChooseCardPhase() throws InvalidAction, InvalidPhase {
-        throw new InvalidPhase("You cannot choose a card");
-    }
-
-    public void toChooseCardPhase(){};
-
-    public void MovingPhase() throws InvalidAction{
-        throw new InvalidAction("Wrong move");
-    }
-
-    public void toMovingPhase(){};
-
-    public  void DecisionPhase() throws InvalidAction, InvalidPhase{
-        throw new InvalidPhase("");
-    }
-
-    public void toDecisionPhase(){};
-
-    public  void BattlePhase() throws InvalidAction{
+    public  void toWaitBattlePhase() throws InvalidAction{
         throw new InvalidAction("You cannot attack");
     }
 
-    public void toBattlePhase(){};
-
-    public void HomaPanelPhase() throws InvalidAction{
+    public void toWaitHomaPhase() throws InvalidAction{
         throw new InvalidAction("You cannot rest");
     }
 
-    public void toHomePhase(){
+    public void toStopPhase() throws InvalidPhase{
+        throw new InvalidPhase("You cannot stop");
     }
 
-    public void MovesLeftPhase() throws InvalidPhase{
-
+    public void toEndPhase() throws InvalidPhase{
+        throw new InvalidPhase("You cannot finish your turn yet");
     }
-
-    public void toMovesleftPhase(){}
-
-    public void ActivateCardPhase() throws InvalidPhase{
-
-    }
-
-    public void toActivateCardPhase(){
-
-    }
-
-    public void PanelPhase() throws  InvalidPhase{
-
-    }
-
-    public void toPanelPhase(){};
-
-    public void EndPhase() throws InvalidPhase{
-
-    }
-
-    public void toEndPhase(){}
-
-
-    public void toHomePanelPhase(){
-
-    };
 }

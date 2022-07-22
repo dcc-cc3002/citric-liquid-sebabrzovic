@@ -7,7 +7,7 @@ import java.util.Set;
 
 public interface Ipanel {
 
-    Set<Panel> getNextPanels();
+    Set<Ipanel> getNextPanels();
 
     float getId();
 

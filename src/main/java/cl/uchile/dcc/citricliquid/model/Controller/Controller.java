@@ -1,13 +1,22 @@
 package cl.uchile.dcc.citricliquid.model.Controller;
 
+import cl.uchile.dcc.citricliquid.model.Listeners.HomePanelListener;
+import cl.uchile.dcc.citricliquid.model.Listeners.moreThanOneNextStep;
+import cl.uchile.dcc.citricliquid.model.Listeners.moreThanOnePlayer;
+import cl.uchile.dcc.citricliquid.model.Listeners.normaLevelListener;
+import cl.uchile.dcc.citricliquid.model.Phases.InvalidAction;
+import cl.uchile.dcc.citricliquid.model.Phases.InvalidPhase;
 import cl.uchile.dcc.citricliquid.model.Phases.Phase;
 import cl.uchile.dcc.citricliquid.model.Units.Boss_Unit;
+import cl.uchile.dcc.citricliquid.model.Units.IUnit;
 import cl.uchile.dcc.citricliquid.model.Units.Player;
 import cl.uchile.dcc.citricliquid.model.Units.Wild;
 import cl.uchile.dcc.citricliquid.model.board.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -16,22 +25,19 @@ public class Controller {
     private Player player;
     private List<Player> listPlayers;
     private Panel panel;
-    private List<Panel> listPanel;
+    private List<Ipanel> listPanel;
     private int movesLeft;
     private Player winner = null;
     private int turn;
     private int chapter;
+    private IUnit oponnent = null;
+    private IUnit actualUnit = null;
+    private int numberOfOpponents;
 
-    private final PropertyChangeSupport NormaLevelListener= new normaLevelListener(this);
-    private final PropertyChangeSupport atHomePanel= new PropertyChangeSupport(this);
-    private final PropertyChangeSupport moreThanOnePlayer= new PropertyChangeSupport(this);
-    private final PropertyChangeSupport moreThanOnePath= new PropertyChangeSupport(this);
-
-
-
-
-
-
+    private final PropertyChangeListener NormaLevelListener = new normaLevelListener(this);
+    private final PropertyChangeListener atHomePanel = new HomePanelListener(this);
+    private final PropertyChangeListener moreThanOnePlayer = new moreThanOnePlayer(this);
+    private final PropertyChangeListener moreThanOnePath = new moreThanOneNextStep(this);
 
 
     /**
@@ -41,8 +47,9 @@ public class Controller {
         this.phase = phase;
         phase.setController(this);
     }
+
     /**
-    Adding the player with its attributes
+     * Adding the player with its attributes
      */
     public Player addPlayer(String name, int hp, int atk, int def, int evd, @NotNull Ipanel panel, int Id) {
         Player player = new Player(name, hp, atk, def, evd);
@@ -55,10 +62,11 @@ public class Controller {
 
     /**
      * Adding the player to the list that keeps the order for the game
-     * Also creating a method to acces that list
+     * Also creating a method to access that list
+     *
      * @param Player1
      */
-    public void addplayerList(Player Player1){
+    public void addplayerList(Player Player1) {
         this.listPlayers.add(Player1);
     }
 
@@ -68,6 +76,7 @@ public class Controller {
 
     /**
      * Set and get the player that is currently playing
+     *
      * @return
      */
     public Player getPlayer() {
@@ -93,6 +102,7 @@ public class Controller {
 
     /**
      * Creating method that creats the wild units
+     *
      * @param name
      * @param hp
      * @param atk
@@ -109,7 +119,7 @@ public class Controller {
     }
 
     /**
-     * Method that creates all the type of panel with a repective aid
+     * Method that creates all the type of panel with a respective id
      * @param id
      * @return
      */
@@ -119,31 +129,31 @@ public class Controller {
         return New_panel;
     }
 
-    public Boss addBossPanel(int id){
+    public Boss addBossPanel(int id) {
         Boss New_panel = new Boss(id);
         listPanel.add(New_panel);
         return New_panel;
     }
 
-    public Drop addDropPanel(int id){
+    public Drop addDropPanel(int id) {
         Drop New_panel = new Drop(id);
         listPanel.add(New_panel);
         return New_panel;
     }
 
-    public Encounter addEncounterPanel(int id){
+    public Encounter addEncounterPanel(int id) {
         Encounter New_panel = new Encounter(id);
         listPanel.add(New_panel);
         return New_panel;
     }
 
-    public Home addHomePanel(int id){
+    public Home addHomePanel(int id) {
         Home New_panel = new Home(id);
         listPanel.add(New_panel);
         return New_panel;
     }
 
-    public Neutral addNeutralPanel(int id){
+    public Neutral addNeutralPanel(int id) {
         Neutral New_panel = new Neutral(id);
         listPanel.add(New_panel);
         return New_panel;
@@ -152,7 +162,7 @@ public class Controller {
     /**
      * setting and getting the panels that are next to the current one
      */
-    public Set<Panel> getNextPanels(Ipanel current_panel) {
+    public Set<Ipanel> getNextPanels(Ipanel current_panel) {
         return current_panel.getNextPanels();
     }
 
@@ -162,7 +172,6 @@ public class Controller {
 
     /**
      * roll of the dice
-     *
      */
     public int dice() {
         int dice = getPlayer().roll();
@@ -171,6 +180,7 @@ public class Controller {
 
     /**
      * set and get moves the player will have
+     *
      * @param movesLeft
      */
     public void setMovesLeft(int movesLeft) {
@@ -181,85 +191,95 @@ public class Controller {
         return movesLeft;
     }
 
-    public void stopMoving(){
-        phase.toActivateCardPhase();
+    /**
+     * Method that will stop the players movement in case it needs to make a decision
+     * @throws InvalidPhase
+     */
+    public void stopMoving() throws InvalidPhase {
+        phase.toStopPhase();
     }
 
     /**
      * Here will be the methods in charge of moving the player in the 4 possiblr directions, Up, Down, Left, Right
      */
-    public void moveDown(){ /** preguntar si vale la pena meter el if dentro de Movesleft phase*/
-        this.setMovesLeft(getMovesLeft()-1);
+    public void moveDown() throws InvalidPhase {
+        phase.toMovingPhase();
+        this.setMovesLeft(getMovesLeft() - 1);
         this.setPlayerPanel(this.getPlayer(), getPlayer().getCurrentPanel().getDown());
-        if(movesLeft==0){
-            stopMoving();/** crear listener*/
+        if (movesLeft == 0) {
+            stopMoving();
         }
-        phase.toDecisionPhase();
     }
 
-    public void moveUp(){
-        this.setMovesLeft(getMovesLeft()-1);
+    public void moveUp() throws InvalidPhase {
+        phase.toMovingPhase();
+        this.setMovesLeft(getMovesLeft() - 1);
         this.setPlayerPanel(this.getPlayer(), getPlayer().getCurrentPanel().getUp());
-        if(movesLeft==0){
+        if (movesLeft == 0) {
             stopMoving();
         }
-        phase.toDecisionPhase();
     }
-    public void moveRight(){
-        this.setMovesLeft(getMovesLeft()-1);
+
+    public void moveRight() throws InvalidPhase {
+        phase.toMovingPhase();
+        this.setMovesLeft(getMovesLeft() - 1);
         this.setPlayerPanel(this.getPlayer(), getPlayer().getCurrentPanel().getRight());
-        if(movesLeft==0){
+        if (movesLeft == 0) {
             stopMoving();
         }
-        phase.toDecisionPhase();
     }
-    public void moveLeft(){
-        this.setMovesLeft(getMovesLeft()-1);
+
+    public void moveLeft() throws InvalidPhase {
+        phase.toMovingPhase();
+        this.setMovesLeft(getMovesLeft() - 1);
         this.setPlayerPanel(this.getPlayer(), getPlayer().getCurrentPanel().getLeft());
-        if(movesLeft==0){
+        if (movesLeft == 0) {
             stopMoving();
         }
-        phase.toDecisionPhase();
     }
 
+    /**
+     * Once it is notified that it is at home it will stop moving
+     * @param value
+     */
 
-
-
-    public void onHomePanel(boolean value){
+    public void onHomePanel(boolean value) {
         setCanIMove(false);
     }
 
-    public void setCanIMove(boolean iMove){
+    /**
+     * Method that set the posibility of movement
+     * @param iMove
+     */
+    public void setCanIMove(boolean iMove) {
+        if (iMove==false){
+            this.movesLeft = 0;
+        }
         player.setMovement(iMove);
     }
 
-    public void areMoreSteps(boolean steps){
+    /**
+     * Boolean requiered for the listener
+     * @param steps
+     */
+    public void areMoreSteps(boolean steps) {
         player.setMovement(steps);
     }
 
-    public void NewNormaLevel(int level){
-        if (level==6){
-            winner=getPlayer();
+    /**
+     * This method is use when the observer notifies that a player has NormaLevel=6*
+     * Method requiered for the listener
+     * @param level
+     */
+    public void NewNormaLevel(int level) {
+        if (level == 6) {
+            winner = getPlayer();
         }
     }
 
 
 
-
     /**
-     * returns weather the player is ko or not
-     * @return
-     */
-    public boolean is_KO(){
-        return getPlayer().isKO();
-    }
-
-
-    /**
-     * These method is use when the observer advices that a player
-     * has NormaLevel=6
-     * in that case this player will be the owner of the turn , thats why returns
-     * the owner
      * @return the winner of the game
      */
     public Player getWinner() {
@@ -267,37 +287,31 @@ public class Controller {
     }
 
     /**
-     * Acording to the var turn in the class
-     * this method will extract the current player(owner
-     * of the turn) from the list of Players
-     * @return player owner of the turn
+     * Reset the current player after each turn
      */
     public void resetcurrentPlayer() {
         this.player = listPlayers.get((turn - 1) % listPlayers.size());
         player.addNormaLevelListener(NormaLevelListener);
 
+
     }
 
 
     /**
-     *When a player cant do anithing alse
-     * finishturn() sets the value of turn
-     * in order to change the ower of the turn
+     * Method tha implements everything necessary after the turn has finished
      */
     public void finishTurn() {
         if (turn % listPlayers.size() == 0) {
             chapter++;
         }
+        turn++;
         setMovesLeft(0);
         resetcurrentPlayer();
-        turn++;
         player = getPlayer();
     }
 
 
-
     /**
-     *
      * @return the current chapter
      */
     public int getChapter() {
@@ -305,8 +319,7 @@ public class Controller {
     }
 
     /**
-     * When we want to change the NormaGoal for the owner
-     * we use setNormaGoal
+     * Set the normaGoal
      * @param goal new NormaGoal
      */
     public void setNormaGoal(String goal) {
@@ -314,74 +327,124 @@ public class Controller {
     }
 
     /**
-     * calcula el ataque efectuado por la unidad
-     * @param unit Unidad que ataca
-     * @return cantidad e ataque
+     * Gets the final attack of a unit
      */
-    public int attack(IUnit unit){
-        return unit.attack();
+    public int attack(IUnit unit) {
+        return unit.getFinalAttack();
     }
 
 
     /**
-     * Metodo evadir, efectua la evasión de una unidad
-     * @param attacker quien atacó
-     * @param victim quien recibe el atque y decide evadir
-     * @throws InvalidTransitionException en caso de no hacer una transicion correcta
+     * Methods for evading or defending the attack
+     * @param attacker
+     * @param victim
      */
-    public void evade(IUnit attacker,IUnit victim) throws InvalidTransitionException {
-        int attack=attack(attacker);
-        victim.evade(attack);
-        afterEvadeOrDefend(attacker,victim);
+    public void evade(IUnit attacker, IUnit victim) throws InvalidAction, InvalidPhase {
+        int attack = attack(attacker);
+        victim.esquivar(attack);
+
+        afterAttack(attacker, victim);
+    }
+    public void defend(IUnit attacker, IUnit victim) throws InvalidAction, InvalidPhase {
+        int attack = attack(attacker);
+        victim.defense(attack);
+
+        afterAttack(attacker, victim);
     }
 
     /**
-     * Metodo que efectua la efensa de una unidad
-     * @param attacker quien ataca
-     * @param victim quien decide defende
-     * @throws InvalidTransitionException en caso de na transición incorrecta
+     * Once the attack is finished, this methods verifies if the victim is ko and then it leads up the posible counterattack
+     * @param attacker
+     * @param victim
      */
-    public void defend(IUnit attacker, IUnit victim) throws InvalidTransitionException {
-        int attack=attack(attacker);
-        victim.defend(attack);
-        afterEvadeOrDefend(attacker,victim);
-    }
-
-    /**
-     * Luego de evadir o defender el oponente contrataca
-     * y el dueño del turno termina su turno
-     * @param attacker quien ataca
-     * @param victim quien recibe el ataque
-     * @throws InvalidTransitionException
-     */
-    public void afterEvadeOrDefend(IUnit attacker, IUnit victim) throws InvalidTransitionException {
-        if(victim.isK_O()){
-            setActualUnit(getOwner());
-            setOponnent(nullPLayer);
-            attacker.increaseStarsBy(victim);
-            attacker.increaseVictoriesBy(victim);
-            phase.toMovingPhase();
-        }
-        else if(!victim.equals(getOwner())){
-            counterattack(victim,attacker);
+    public void afterAttack(IUnit attacker, IUnit victim) throws InvalidPhase {
+        if (victim.isKO()) {
+            setActualUnit(getPlayer());
+            setOponnent(null);
+            victim.defeatByUnit(attacker);
+            phase.toEndPhase();
+        } else if (!victim.equals(getPlayer())) {
+            counterattack(victim, attacker);
         }
     }
 
     /**
-     * Se efectua el contrataque del oponente
-     * @param attacker quien decide contratacar
-     * @param victim el dueño del turno
+     * Sets the opponent for the battle
+     * @param unit
      */
-    public void counterattack(IUnit attacker, IUnit victim){
+    private void setOponnent(IUnit unit) {
+        this.oponnent = unit;
+    }
+
+    /**
+     * Sets the unit for the battle
+     * @param unit
+     */
+    private void setActualUnit(IUnit unit) {
+        this.actualUnit = unit;
+    }
+
+    /**
+     * CounterAttack method
+     * @param attacker
+     * @param victim
+     * */
+    public void counterattack(IUnit attacker, IUnit victim) {
+        Battle(attacker, victim);
+    }
+
+    /**
+     * Here the battle will be programed, but I was not able to do it because it is mainly done by the visual interface for there is a lot of inputs
+     * such as weather the victim chooses to defend or evade
+     * @param attacker
+     * @param victim
+     */
+
+    public void Battle(IUnit attacker, IUnit victim) {
+        int attack = attacker.getFinalAttack();
+    }
+
+    public void MoreThanOnePath() throws InvalidPhase {
+        if (movesLeft > 0) {
+            stopMoving();
+            try {
+                phase.toDecisionMovingPhase();
+            } catch (InvalidPhase invalidPhase) {
+                invalidPhase.printStackTrace();
+            }
+        }
+    }
+
+    public void MorePlayers(boolean newValue) throws InvalidPhase {
+        if (!newValue) {
+            stopMoving();
+            List<Player> opponents = new ArrayList<>();
+            opponents.addAll(getPlayer().getCurrentPanel().getPlayers());
+            opponents.remove(getPlayer());
+            numberOfOpponents = opponents.size();
+            setOponnent(opponents.get(0));
+            try {
+                phase.toWaitBattlePhase();
+            } catch (InvalidAction e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void chooseFight() throws InvalidPhase {
+        stopMoving();
         try {
-            phase.toWaitFigthPhase(attacker,victim);
-        } catch (InvalidTransitionException e) {
-            e.printStackTrace();
+            phase.toWaitBattlePhase();
+        } catch (InvalidAction e) {
+            throw new RuntimeException(e);
         }
-        tryToFight();
     }
 
 
 
 
-}
+
+
+
+
+    }

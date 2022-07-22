@@ -27,4 +27,23 @@ public interface IUnit {
     IUnit copy();
 
     String getName();
+
+    int getFinalAttack();
+
+    void esquivar(int attack);
+
+    void defense(int attack);
+
+    boolean isKO();
+
+
+    void increasevictoriesBy(int i);
+
+    void defeatByUnit(IUnit unit);
+
+    void defeatedByPlayer(Player unit);
+
+    void defeatedByWild(Wild unit);
+
+    void defeatedByBoss(Boss_Unit unit);
 }

@@ -19,14 +19,20 @@ public class Wild extends AbstractUnit {
         return super.getName();
     }
 
+
     /**
-     * player won the batlle agains a wild unit
-     * @param player
+     * As it was described in the abstract, these are the methods for the double dispatch, defeated by player and unit
+     * @param unit
      */
     @Override
-    public void defeatedByPlayer(Player player) {
-        player.increaseStarsBy(this.getStars());
-        player.increasevictoriesBy(3);
+    public void defeatedByPlayer(Player unit) {
+        unit.increaseStarsBy(this.getStars());
+        unit.increasevictoriesBy(1);
+    }
+
+    @Override
+    public void defeatByUnit(IUnit unit) {
+        unit.defeatedByWild(this);
     }
 
     /**

@@ -15,6 +15,9 @@ public abstract class AbstractUnit implements IUnit {
   private int stars;
   private int currentHp;
 
+  private boolean amIKO = false;
+  public int victories;
+
   /**
    * Creates a new character.
    * @param hp
@@ -33,8 +36,25 @@ public abstract class AbstractUnit implements IUnit {
     this.atk = atk;
     this.def = def;
     this.evd = evd;
+    this.victories = 1;
     random = new Random();
   }
+
+
+  /**
+   * Returns this player's victory count.
+   */
+  public int getVictories() {
+    return victories;
+  }
+
+  /**
+   * Increases this player's star count by an amount.
+   */
+  public void increasevictoriesBy(final int amount) {
+    victories += amount;
+  }
+
   /**
    * Returns the character's name.
    */
@@ -119,6 +139,9 @@ public abstract class AbstractUnit implements IUnit {
    */
   public void increaseHpBy(final int newHp) {
     this.currentHp = Math.max(Math.min(this.currentHp + newHp, maxHp), 0);
+    if (this.currentHp == 0){
+      this.amIKO = true;
+    }
   }
 
   /**
@@ -149,8 +172,13 @@ public abstract class AbstractUnit implements IUnit {
 
   }
 
+  /**
+   * The next 4 methods are created using double dispatch pattern in order to make the fight much easier. The method is applied to the unit
+   * that lost the battle and it sends the unit that won the battle.
+   * @param unit
+   */
 
-  public void defeatAgainstUnit(IUnit unit){
+  public void defeatByUnit(IUnit unit){
   }
   public void defeatedByPlayer(Player unit){
 
@@ -161,23 +189,12 @@ public abstract class AbstractUnit implements IUnit {
   public void defeatedByBoss(Boss_Unit unit){
 
   }
-
-  /**
-   * Like every unit can defeat a player this method is created in the abstract class
-   * @param e_player
-   */
-  public void victory_against_player(Player e_player){
-    this.increaseStarsBy((int)Math.floor(e_player.getStars()*0.5));
-    e_player.reduceStarsBy((int)Math.floor(e_player.getStars()*0.5));
-  }
-
   /**}
    * the unit recieved the attack and only looses Hp if its dodge is better than the attack
    * @param attackRecieved
-   * @param diceRoll
    */
-  public void esquivar(int attackRecieved, int diceRoll){
-    if (this.evd+ diceRoll < attackRecieved){
+  public void esquivar(int attackRecieved){
+    if (this.evd+ this.roll() < attackRecieved){
       this.increaseHpBy(-attackRecieved);
     }
   }
@@ -185,10 +202,9 @@ public abstract class AbstractUnit implements IUnit {
   /**
    * defense by the unit
    * @param attackRecieved
-   * @param diceRoll
    */
-  public void defense(int attackRecieved, int diceRoll){
-    this.increaseHpBy(Math.max(1, attackRecieved - (this.def + diceRoll)));
+  public void defense(int attackRecieved){
+    this.increaseHpBy(Math.max(1, attackRecieved - (this.def + this.roll())));
   }
 
   /**
@@ -196,9 +212,22 @@ public abstract class AbstractUnit implements IUnit {
    */
   public abstract AbstractUnit copy();
 
+  /**
+   * returns the final attack of the unit
+   * @return
+   */
   public int getFinalAttack(){
     return (this.roll()+ this.getAtk());
   }
+
+  /**
+   * returns weather it is ko or not
+   * @return
+   */
+  public boolean isKO(){
+    return amIKO;
+  }
+
 
 
 

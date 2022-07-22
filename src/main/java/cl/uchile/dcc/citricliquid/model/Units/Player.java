@@ -10,12 +10,10 @@ import java.util.*;
 
 public class Player extends AbstractUnit {
     private int normaLevel;
-    private int victories;
     private int homePanel;
     private String NormaGoal; /** STARS OR WINS*/
     private Ipanel currentPanel = null;
     private boolean canImove;
-    private boolean amIKO = false;
 
     private final PropertyChangeSupport NormaLevelListener= new PropertyChangeSupport(this);
     private final PropertyChangeSupport atHomePanel= new PropertyChangeSupport(this);
@@ -34,28 +32,11 @@ public class Player extends AbstractUnit {
      */
     public Player(String name, int hp, int atk, int def, int evd){
         super(name, hp,atk, def, evd);
-        victories = 1;
         normaLevel = 1;
         NormaGoal = "STARS";
 
 
     }
-
-
-    /**
-     * Returns this player's victory count.
-     */
-    public int getVictories() {
-        return victories;
-    }
-
-    /**
-     * Increases this player's star count by an amount.
-     */
-    public void increasevictoriesBy(final int amount) {
-        victories += amount;
-    }
-
 
 
     /**
@@ -160,13 +141,9 @@ public class Player extends AbstractUnit {
     }
 
     /**
-     * Preparing methods for the battle, starting by creating increase stars and victory by units
+     * Preparing methods for the battle using double dispatch, starting by creating increase stars and victory by units, and putting all the possible defeats
      */
 
-
-    public void defeatAgainstUnit(IUnit unit){
-        unit.defeatedByPlayer(this);
-    }
 
     @Override
     public void defeatedByPlayer(Player unit) {
@@ -176,58 +153,32 @@ public class Player extends AbstractUnit {
     }
 
     @Override
-    public void defeatedByBoss(Boss_Unit unit) {
-
+    public void defeatByUnit(IUnit unit) {
+        unit.defeatedByPlayer(this);
     }
-
-    /**
-     * the current player wins the battle against another player
-     * @param e_player
-     */
 
     @Override
-    public void victory_against_player(Player e_player){
-        this.increasevictoriesBy(2);
+    public void defeatedByBoss(Boss_Unit unit) {
+        this.reduceStarsBy((int)Math.floor(unit.getStars()*0.5));
+        unit.increaseStarsBy((int)Math.floor(unit.getStars()*0.5));
     }
 
-    /**
-     * Victory against wild unit
-     * @param wild
-     */
-    public void victoryAgainstWild(Wild wild){
-        this.increasevictoriesBy(1);
-        this.increaseStarsBy(wild.getStars());
-    }
-
-    /**
-     * Victory against boss Unit
-     * @param boss
-     */
-    public void victoryAgainstBoss(Boss_Unit boss){
-        this.increasevictoriesBy(3);
-        this.increaseStarsBy(boss.getStars());
+    @Override
+    public void defeatedByWild(Wild unit) {
+        this.reduceStarsBy((int)Math.floor(unit.getStars()*0.5));
+        unit.increaseStarsBy((int)Math.floor(unit.getStars()*0.5));
     }
 
 
     /**
-     * Method that adss a listener in the unit
+     * Method that adds the proper listeners in the player so it is notified when it land in its home panel, when there is a posibility of a battle
+     * and when there is more than one posible path
      * @param Listener new Listener
      */
 
     public void addAtHomePanelnotification(PropertyChangeListener Listener){
         atHomePanel.addPropertyChangeListener(Listener);
     }
-
-    public void setMovement(boolean move){
-        this.canImove = move;
-    }
-
-    /**
-     * Method that adss a listener in the unit
-     * @param Listener new Listener
-    }
-
-     */
 
     public void addNormaLevelListener(PropertyChangeListener Listener) {
         NormaLevelListener.addPropertyChangeListener(Listener);
@@ -242,9 +193,13 @@ public class Player extends AbstractUnit {
         moreThanOnePath.addPropertyChangeListener(Listener);
     }
 
-    public boolean isKO(){
-        return amIKO;
-    }
+    /**
+     * Setting a boolean for a further use
+     * @param move
+     */
 
+    public void setMovement(boolean move){
+        this.canImove = move;
+    }
 
 }

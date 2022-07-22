@@ -34,4 +34,27 @@ subclass of the abstract class Panel, there it contains the methods of setting p
 setting neighboor panels, setting an ID. And last but not least it contains the method activatedBy, which is defined
 in each panel with its own rules. That will be what diferenciates each panel.
 
+For the second part of the project, it will be devided in 2 big parts, one that will be the controller, and the second
+would be the phases.
+
+Phases:
+In this section the state pattern design was implemented by creating 8 phases where the player can be stationed:
+-Start Phase: Where the player iniciates its turn. He can then move to the recovery phase or Moving phase:
+-Recovery Phase: Phase where the player recovers itself
+-Moving Phase: Phase where the player moves the amount of steps the dice rolled.
+- Decision, WaittoBattle, WaittoHome phases: Each one is where the player has to face a decision weather it is choosing
+where to move, or fight or just stay at home.
+- Stop Phase: Phase created to keep the player still during the turn in case it is needed.
+- EndTurn Phase: Final phase
+
+Controller:
+This section is the most important for it includes the creation of all units, panels necessary. It also includes the 
+methods necessary for the movement of each player and also how to set the owner of the turn when needed. It also 
+includes methods that make the base for the game, such as the conditions to finish a turn, to set the norma goal, get 
+and set the chapters. And finally it has the methods to make an attack possible, and a possible counterattack, that way
+the game can work properly. It also uses the observer Pattern creating listeners for each case, so it can be notified in
+three cases, when it lands in its homePanel, when it has the possibility to battle a unit or a player and finally when 
+it has more than one possible step. All this is at the same time connected to phases.
+
+
 Created by Sebastian Brzovic

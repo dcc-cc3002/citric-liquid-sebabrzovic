@@ -10,11 +10,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author <a href="mailto:ignacio.slater@ug.uchile.cl">Ignacio Slater M.</a>.
- * @version 1.0.6-rc.1
- * @since 1.0
- */
 class PanelTest {
   private final static String PLAYER_NAME = "Suguri";
   private final static int BASE_HP = 4;

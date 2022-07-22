@@ -13,7 +13,7 @@ import cl.uchile.dcc.citricliquid.model.Units.Player;
 public abstract class   Panel implements Ipanel{
 
   private float Id;
-  private final Set<Panel> nextPanels = new HashSet<>();
+  private final Set<Ipanel> nextPanels = new HashSet<>();
   private ArrayList<Player> Players = new ArrayList<Player>();
   private Ipanel Up = null;
   private Ipanel Down = null;
@@ -32,7 +32,7 @@ public abstract class   Panel implements Ipanel{
   /**
    * Returns a copy of this panel's next ones.
    */
-  public Set<Panel> getNextPanels() {
+  public Set<Ipanel> getNextPanels() {
     return Set.copyOf(nextPanels);
   }
 
